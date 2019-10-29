@@ -5,7 +5,7 @@ var app = express();
 app.get('/', (request, response, next) => {
     response.status(200).json({
         ok: true,
-        msg: 'Request success'
+        msg: 'Petición realizada correctamente.'
     })
 });
 
