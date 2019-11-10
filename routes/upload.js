@@ -1,13 +1,13 @@
 var express = require('express');
 var fileUpload = require('express-fileupload');
-var app = express();
 var fs = require('fs');
-
-app.use(fileUpload());
+var app = express();
 
 var Usuario = require('../models/usuario');
 var Hospital = require('../models/hospital');
 var Medico = require('../models/medico');
+
+app.use(fileUpload());
 
 app.put('/:tipo/:id', (req, res, next) => {
     var tipo = req.params.tipo;
@@ -61,7 +61,7 @@ app.put('/:tipo/:id', (req, res, next) => {
                 errors: err
             });
         }
-        subirPorTipo(tipo, id, path, res);
+        subirPorTipo(tipo, id, nombreArchivo, res);
     });
 });
 

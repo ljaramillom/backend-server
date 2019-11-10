@@ -119,7 +119,7 @@ app.delete('/:id', mdAutenticacion.verificaToken, (req, resp) => {
 // =========================
 // crear nuevo usuario
 // =========================
-app.post('/', mdAutenticacion.verificaToken, (req, resp) => {
+app.post('/', (req, resp) => {
     var body = req.body;
     var usuario = new Usuario({
         nombre: body.nombre,
