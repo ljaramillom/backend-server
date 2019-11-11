@@ -15,8 +15,8 @@ app.get('/', (req, res, next) => {
     desde = Number(desde);
 
     Medico.find({})
-        .skip(desde)
-        .limit(5)
+        // .skip(desde)
+        // .limit(5)
         .populate('usuario', 'nombre email')
         .populate('hospital')
         .exec(
@@ -40,6 +40,38 @@ app.get('/', (req, res, next) => {
             });
 });
 
+
+// ==========================================
+// Obtener un Medico
+// ==========================================
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+
+    Medico.findById(id)
+        .populate('usuario', 'nombre email img')
+        .populate('hospital')
+        .exec((err, medico) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar medico',
+                    errors: err
+                });
+            }
+
+            if (!medico) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'El medico con el id ' + id + ' no existe',
+                    errors: { message: 'No existe un medico con ese ID' }
+                });
+            }
+            return res.status(200).json({
+                ok: true,
+                medico: medico
+            });
+        });
+});
 
 // ==========================================
 // Actualizar Medico
