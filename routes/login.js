@@ -5,13 +5,26 @@ var jwt = require('jsonwebtoken');
 var SEED = require('../config/config').SEED;
 
 var app = express();
-
 var Usuario = require('../models/usuario');
+
+var mdAutenticacion = require('../middlewares/autenticacion');
 
 // google
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
 var CLIENT_ID = require('../config/config').CLIENT_ID;
+
+// renovar token
+app.get('/renuevaToken', mdAutenticacion.verificaToken, (req, res) => {
+
+    var token = jwt.sign({ usuario: req.usuario }, SEED, { expiresIn: 14400 }); // expira en 4 horas
+
+    res.status(200).json({
+        ok: true,
+        usuario: req.usuario,
+        token
+    });
+});
 
 // autenticacion con Google
 async function verify(token) {
@@ -117,7 +130,7 @@ app.post('/', (req, resp) => {
         if (!usuarioDB) {
             return resp.status(400).json({
                 ok: false,
-                msg: 'Credenciales incorrectas - email',
+                msg: 'Credenciales incorrectas, por favor intente nuevamente.',
                 errors: err
             });
         }
@@ -125,7 +138,7 @@ app.post('/', (req, resp) => {
         if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
             return resp.status(400).json({
                 ok: false,
-                msg: 'Credenciales incorrectas - password',
+                msg: 'Credenciales incorrectas, por favor intente nuevamente.',
                 errors: err
             });
         }
